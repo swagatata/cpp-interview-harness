@@ -1,5 +1,7 @@
 #include "leetcode.hpp"
 
+#include <sstream>
+
 #include <gtest/gtest.h>
 
 namespace polish_notation {
@@ -7,27 +9,51 @@ namespace polish_notation {
 class Solution {
 public:
     int evaluate(const string& expression) {
-        // TODO: implement
-        for (auto& token : parse_tokens(expression)) {
-            if (isnumber(token)) {
-                st.push()
-            }
-            switch (token)
-            {
-            case '*':
-                /* code */
-                break;    
-            case "+":
-                break;        
-            default:
-                break;
+        stack<int> values;
+
+        for (const auto& token : parse_tokens(expression)) {
+            if (is_operator(token)) {
+                const int rhs = values.top();
+                values.pop();
+                const int lhs = values.top();
+                values.pop();
+
+                values.push(apply_operator(lhs, rhs, token));
+            } else {
+                values.push(stoi(token));
             }
         }
-        return 0;
+
+        return values.top();
     }
 private:
-    iterator<string> parse_tokens(const string& expressions) {
-        // TODO
+    vector<string> parse_tokens(const string& expression) {
+        istringstream stream(expression);
+        vector<string> tokens;
+        string token;
+
+        while (stream >> token) {
+            tokens.push_back(token);
+        }
+
+        return tokens;
+    }
+
+    bool is_operator(const string& token) {
+        return token == "+" || token == "-" || token == "*" || token == "/";
+    }
+
+    int apply_operator(int lhs, int rhs, const string& op) {
+        if (op == "+") {
+            return lhs + rhs;
+        }
+        if (op == "-") {
+            return lhs - rhs;
+        }
+        if (op == "*") {
+            return lhs * rhs;
+        }
+        return lhs / rhs;
     }
 };
 
