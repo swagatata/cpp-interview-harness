@@ -18,6 +18,23 @@ public:
         if (v.empty())
             return 0;
 
+        int prefixSum = 0;
+        int n = v.size(), total = 0;
+        std::vector<int> prefixSumMods(d_k, 0);
+        prefixSumMods[0] = 1;
+        for (int i = 0; i < n; ++i) {
+            prefixSum += v[i];            
+            total += prefixSumMods[mod(prefixSum)];
+
+            prefixSumMods[mod(prefixSum)]++;
+        }
+        return total;
+    }
+
+    int nSubsetsWithMultipleV1(std::vector<int> v) {
+        if (v.empty())
+            return 0;
+
         if (v.size() == 1)
             return (v[0] % d_k) == 0;
 
@@ -30,25 +47,19 @@ public:
         next[mod(v[n-1])]++;
         totalSubsets += next[0];
         for (int j = n-2; j >= 0; --j) {
-            int modulus = mod(v[j]);
-            // int prevModulus = mod(v[j-1]);
-            // curr[modulus] = 1 + next[0];
+            int modulus = mod(v[j]);            
 
             for (int i = 0; i < d_k; ++i) {
                 curr[i] = next[mod(i - modulus)];
-            }
-            // curr[0] = next[d_k - modulus];
-            // curr[d_k - prevModulus] = next[mod(d_k - prevModulus - modulus)];
+            }            
             curr[modulus]++;
 
             totalSubsets += curr[0];
 
             for (int i = 0; i < d_k; ++i) {
-                next[i] = curr[i];
-                curr[i] = 0;
+                next[i] = curr[i];                
             }
         }
-        // totalSubsets += next[d_k - mod(v[0])];
         return totalSubsets;
     }
 private:
