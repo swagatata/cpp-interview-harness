@@ -6,19 +6,41 @@ namespace two_d_islands {
 
 class Solution {
 public:
-    void traverse(vector<vector<char>>& grid, int i, int j) {
-        if (grid[i][j] == 'v' || grid[i][j] == '0')
-            return;
+    void traverse(vector<vector<char>>& grid, int x, int y) {
+        std::stack<pair<int, int>, std::vector<pair<int, int>>> st;
+        grid[x][y] = 'v';
+        st.emplace(x, y);
 
-        grid[i][j] = 'v';
-        if (i > 0)
-            traverse(grid, i-1, j);        
-        if (j < (grid[0].size()) - 1)
-            traverse(grid, i, j+1);
-        if (i < (grid.size() - 1))
-            traverse(grid, i+1, j);
-        if (j > 0)
-            traverse(grid, i, j-1);
+        int m = grid.size();
+        int n = grid[0].size();
+        while (!st.empty()) {
+            auto [i, j] = st.top(); st.pop();            
+            // std::cout << "visiting " << i << ", " << j << std::endl;
+            if (i > 0)
+                if (grid[i-1][j] == '1') {
+                    grid[i-1][j] = 'v';
+                    st.emplace(i-1, j);
+                }
+                // traverse(grid, i-1, j);        
+            if (j < (n - 1))
+                if (grid[i][j+1] == '1') {
+                    grid[i][j+1] = 'v';
+                    st.emplace(i, j+1);
+                }
+                // traverse(grid, i, j+1);
+            if (i < (m - 1))
+                if (grid[i+1][j] == '1') {
+                    grid[i+1][j] = 'v';
+                    st.emplace(i+1, j);
+                }
+                // traverse(grid, i+1, j);
+            if (j > 0)
+                if (grid[i][j-1] == '1') {
+                    grid[i][j-1] = 'v';
+                    st.emplace(i, j-1);
+                }
+                // traverse(grid, i, j-1);                                       
+        }
     }
 
     int numIslands(vector<vector<char>>& grid) {
@@ -26,9 +48,6 @@ public:
 
         for (int i = 0; i < grid.size(); ++i) {
             for (int j = 0; j < grid[i].size(); ++j) {
-                if (grid[i][j] == '0')
-                    continue;
-
                 if (grid[i][j] == '1') {
                     traverse(grid, i, j);
                     total++;
