@@ -25,18 +25,13 @@ class Solution {
             size_t position = 0;
 
             while (position < s.size()) {
-                if (std::isalpha(s[position])) {
-                    if (cst.empty() || cst.top() == "[") {
-                        cst.push(s.substr(position, 1));
-                    } else {
-                        auto str = cst.top();
-                        cst.pop();
-
-                        str.append(s.substr(position, 1));
-                        cst.push(str);
-                    }
+                size_t i = position;
+                while (std::isalpha(s[position])) {
                     position++;
-                    continue;
+                }
+                if (position != i) {
+                    cst.push(s.substr(i, position - i));
+                    // continue;
                 }
 
                 int num = 0;
@@ -47,7 +42,7 @@ class Solution {
                 }
                 if (num) {
                     st.push(num);
-                    continue;
+                    // continue;
                 }
                 switch (s[position]) {
                     case '[':
@@ -111,7 +106,13 @@ INSTANTIATE_TEST_SUITE_P(
         TestCase{"10[a]", "aaaaaaaaaa"},
         TestCase{"3[a2[c]]", "accaccacc"},
         TestCase{"2[a2[b]]", "abbabb"},
-        TestCase{"abc3[cd]xyz", "abccdcdcdxyz"}
+        TestCase{"abc3[cd]xyz", "abccdcdcdxyz"},
+        TestCase{"1[a]", "a"},
+        TestCase{"2[3[a]]", "aaaaaa"},
+        TestCase{"2[a]3[b]4[c]", "aabbbcccc"},
+        TestCase{"2[a3[b4[c]]]", "abccccbccccbccccabccccbccccbcccc"},
+        TestCase{"2[ab3[cd]ef4[gh]]", "abcdcdcdefghghghghabcdcdcdefghghghgh"},
+        TestCase{"a1[b2[c]]d", "abccd"}
 ));
 
 }  // namespace decode_string
