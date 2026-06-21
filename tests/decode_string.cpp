@@ -31,7 +31,6 @@ class Solution {
                 }
                 if (position != i) {
                     cst.push(s.substr(i, position - i));
-                    // continue;
                 }
 
                 int num = 0;
@@ -42,7 +41,6 @@ class Solution {
                 }
                 if (num) {
                     st.push(num);
-                    // continue;
                 }
                 switch (s[position]) {
                     case '[':
